@@ -2,14 +2,8 @@
 # Affiche le titre et un bouton « Jouer ». Un clic sur le bouton lance la partie.
 
 import pygame  # on importe la bibliothèque Pygame pour faire la fenêtre et les dessins
-from arena import Arene, LARGEUR, HAUTEUR  # on reprend l'arène et la taille de la fenêtre de arena.py
-
-# --- Couleurs (rouge, vert, bleu) ---
-BLANC = (255, 255, 255)  # couleur du fond de l'écran d'accueil
-NOIR = (30, 30, 30)  # couleur du titre
-GRIS = (110, 110, 110)  # couleur du sous-titre
-BLEU_BOUTON = (224, 234, 250)  # couleur de l'intérieur du bouton
-BLEU_BORD = (40, 110, 210)  # couleur du bord du bouton
+from arena import Arene  # on reprend l'arène de arena.py
+from config import LARGEUR, HAUTEUR, FPS, BLANC, NOIR, GRIS, BLEU_BOUTON, BLEU_BORD  # tous les réglages viennent de config.py
 
 
 class EcranAccueil:
@@ -67,7 +61,7 @@ def main():
             arene.draw(ecran)  # on dessine l'arène
 
         pygame.display.flip()  # on affiche à l'écran tout ce qu'on vient de dessiner
-        horloge.tick(60)  # on attend un peu pour rester à 60 images par seconde
+        horloge.tick(FPS)  # on attend un peu pour rester au nombre d'images par seconde voulu
 
     pygame.quit()  # on ferme Pygame proprement
 
