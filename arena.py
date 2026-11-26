@@ -8,33 +8,27 @@ import pygame
 from config import (
     LARGEUR, HAUTEUR, HAUTEUR_ARENE, MILIEU, FPS,
     BLEU_PALE, ROUGE_PALE, BLEU_TOUR, ROUGE_TOUR, GRIS_LIGNE, FOND_HUD, TEXTE,
-    TAILLE_TOUR, MARGE_TOUR,
+    TAILLE_TOUR, MARGE_TOUR, JOUEUR, ADVERSAIRE,
 )
+from tour import Tour
 
 
-class Tour:
-    """Tour carrée immobile (affichage seulement pour la maquette)."""
-
-    def __init__(self, x, y, couleur):
-        self.x = x
-        self.y = y
-        self.couleur = couleur
-
-    def draw(self, ecran):
-        rect = pygame.Rect(0, 0, TAILLE_TOUR, TAILLE_TOUR)
-        rect.center = (self.x, self.y)
-        pygame.draw.rect(ecran, self.couleur, rect, border_radius=6)
+def dessiner_tour(ecran, tour, couleur):
+    """Dessine une tour vivante sous forme de carré (l'affichage reste ici, pas dans Tour)."""
+    rect = pygame.Rect(0, 0, TAILLE_TOUR, TAILLE_TOUR)
+    rect.center = (tour.x, tour.y)
+    pygame.draw.rect(ecran, couleur, rect, border_radius=6)
 
 
 class Arene:
-    """Dessine le terrain fixe et ses six tours."""
+    """Dessine le terrain fixe et ses six tours (la logique des tours est dans tour.py)."""
 
     def __init__(self):
         colonnes = [LARGEUR // 4, LARGEUR // 2, 3 * LARGEUR // 4]
         y_joueur = MARGE_TOUR + TAILLE_TOUR // 2
         y_adverse = HAUTEUR_ARENE - MARGE_TOUR - TAILLE_TOUR // 2
-        self.tours_joueur = [Tour(x, y_joueur, BLEU_TOUR) for x in colonnes]
-        self.tours_adverses = [Tour(x, y_adverse, ROUGE_TOUR) for x in colonnes]
+        self.tours_joueur = [Tour(i, JOUEUR, x, y_joueur) for i, x in enumerate(colonnes)]
+        self.tours_adverses = [Tour(3 + i, ADVERSAIRE, x, y_adverse) for i, x in enumerate(colonnes)]
         self.police = pygame.font.SysFont("arial", 18)
 
     def _ligne_pointillee(self, ecran):
@@ -48,8 +42,12 @@ class Arene:
         self._ligne_pointillee(ecran)
         label = self.police.render("Arène", True, TEXTE)
         ecran.blit(label, label.get_rect(midbottom=(LARGEUR // 2, MILIEU - 4)))
-        for tour in self.tours_joueur + self.tours_adverses:
-            tour.draw(ecran)
+        for tour in self.tours_joueur:
+            if tour.vivante:
+                dessiner_tour(ecran, tour, BLEU_TOUR)
+        for tour in self.tours_adverses:
+            if tour.vivante:
+                dessiner_tour(ecran, tour, ROUGE_TOUR)
         # zone HUD vide (élixir et boutons viendront plus tard)
         ecran.fill(FOND_HUD, (0, HAUTEUR_ARENE, LARGEUR, HAUTEUR - HAUTEUR_ARENE))
         pygame.draw.line(ecran, GRIS_LIGNE, (0, HAUTEUR_ARENE), (LARGEUR, HAUTEUR_ARENE), 1)
