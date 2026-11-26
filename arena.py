@@ -5,23 +5,11 @@ ligne pointillée « Arène » au milieu, trois tours carrées par camp.
 """
 import pygame
 
-# --- Dimensions (fenêtre verticale) ---
-LARGEUR = 480
-HAUTEUR = 800
-HAUTEUR_ARENE = 640          # le reste (en bas) est réservé au HUD
-MILIEU = HAUTEUR_ARENE // 2
-
-# --- Couleurs ---
-BLEU_PALE = (224, 234, 250)
-ROUGE_PALE = (245, 228, 228)
-BLEU_TOUR = (66, 133, 222)
-ROUGE_TOUR = (212, 83, 83)
-GRIS_LIGNE = (150, 150, 150)
-FOND_HUD = (250, 250, 250)
-TEXTE = (90, 90, 90)
-
-TAILLE_TOUR = 44
-MARGE_TOUR = 40              # distance entre la tour et le bord haut/bas de l'arène
+from config import (
+    LARGEUR, HAUTEUR, HAUTEUR_ARENE, MILIEU, FPS,
+    BLEU_PALE, ROUGE_PALE, BLEU_TOUR, ROUGE_TOUR, GRIS_LIGNE, FOND_HUD, TEXTE,
+    TAILLE_TOUR, MARGE_TOUR,
+)
 
 
 class Tour:
@@ -81,7 +69,7 @@ def main():
                 en_cours = False
         arene.draw(ecran)
         pygame.display.flip()
-        horloge.tick(60)
+        horloge.tick(FPS)
     pygame.quit()
 
 
