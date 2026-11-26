@@ -3,7 +3,8 @@
 
 import pygame  # on importe la bibliothèque Pygame pour faire la fenêtre et les dessins
 from arena import Arene  # on reprend l'arène de arena.py
-from config import LARGEUR, HAUTEUR, FPS, BLANC, NOIR, GRIS, BLEU_BOUTON, BLEU_BORD  # tous les réglages viennent de config.py
+from hud import HUD  # on reprend le HUD (jauge d'élixir et boutons) de hud.py
+from config import LARGEUR, HAUTEUR, FPS, BLANC, NOIR, GRIS, BLEU_BOUTON, BLEU_BORD, ELIXIR_DEPART  # tous les réglages viennent de config.py
 
 
 class EcranAccueil:
@@ -44,6 +45,8 @@ def main():
 
     accueil = EcranAccueil()  # on crée l'écran d'accueil
     arene = Arene()  # on crée l'arène (l'écran de la partie)
+    hud = HUD()  # on crée le HUD affiché sous l'arène
+    elixir = ELIXIR_DEPART  # valeur fixe en attendant la classe Élixir de Sellé (#11)
     ecran_actuel = "accueil"  # on commence sur l'écran d'accueil
 
     en_cours = True  # tant que c'est True, le jeu continue
@@ -54,11 +57,14 @@ def main():
             if evenement.type == pygame.MOUSEBUTTONDOWN and ecran_actuel == "accueil":  # clic pendant l'accueil
                 if accueil.clic_sur_jouer(evenement.pos):  # si le clic est sur le bouton « Jouer »
                     ecran_actuel = "partie"  # on passe à l'écran de la partie
+            elif evenement.type == pygame.MOUSEBUTTONDOWN and ecran_actuel == "partie":  # clic pendant la partie
+                hud.clic(evenement.pos)  # le HUD regarde si on a cliqué sur un bouton de troupe
 
         if ecran_actuel == "accueil":  # si on est sur l'accueil
             accueil.draw(ecran)  # on dessine l'accueil
         else:  # sinon on est dans la partie
             arene.draw(ecran)  # on dessine l'arène
+            hud.draw(ecran, elixir)  # on dessine le HUD par-dessus la bande du bas
 
         pygame.display.flip()  # on affiche à l'écran tout ce qu'on vient de dessiner
         horloge.tick(FPS)  # on attend un peu pour rester au nombre d'images par seconde voulu
